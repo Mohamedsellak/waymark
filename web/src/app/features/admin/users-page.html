@@ -1,0 +1,74 @@
+<div class="page">
+  <header class="head">
+    <div>
+      <h1>Users</h1>
+      @if (page(); as p) { <p class="muted num">{{ p.total }} account{{ p.total === 1 ? '' : 's' }}</p> }
+    </div>
+    <button class="btn" type="button" (click)="openNew()"><app-icon name="plus" />Add user</button>
+  </header>
+
+  @if (error(); as msg) { <p class="notice notice-error" role="alert"><app-icon name="alert" />{{ msg }}</p> }
+
+  @if (editing(); as target) {
+    <form class="sheet editor" [formGroup]="form" (ngSubmit)="save()" novalidate>
+      <h2>{{ target === 'new' ? 'Add a user' : 'Edit ' + target.email }}</h2>
+      <div class="grid">
+        <label class="field"><span>Email</span><input type="email" formControlName="email" /></label>
+        <label class="field"><span>Role</span>
+          <select formControlName="role">
+            <option value="User">Planner</option>
+            <option value="Admin">Administrator</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>{{ target === 'new' ? 'Password' : 'New password' }}</span>
+          <input type="password" formControlName="password" autocomplete="new-password" />
+          <span class="hint">{{ target === 'new' ? 'At least 8 characters.' : 'Leave empty to keep the current one.' }}</span>
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" type="button" (click)="editing.set(null)">Cancel</button>
+        <button class="btn" type="submit" [disabled]="form.invalid">{{ target === 'new' ? 'Add user' : 'Save changes' }}</button>
+      </div>
+    </form>
+  }
+
+  @if (page(); as p) {
+    <div class="sheet table-wrap">
+      <table class="table">
+        <thead><tr><th>Email</th><th>Role</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+        <tbody>
+          @for (user of p.data; track user.id) {
+            <tr>
+              <td>
+                <span class="who">
+                  <span class="avatar" aria-hidden="true">{{ user.email[0].toUpperCase() }}</span>
+                  {{ user.email }}
+                </span>
+              </td>
+              <td><span class="badge" [class.badge-accent]="user.role === 'Admin'">{{ user.role === 'Admin' ? 'Administrator' : 'Planner' }}</span></td>
+              <td class="row-actions">
+                <button class="btn btn-ghost btn-sm" type="button" (click)="openEdit(user)"><app-icon name="pencil" />Edit</button>
+                <button class="btn btn-ghost btn-sm danger" type="button" (click)="remove(user)"><app-icon name="trash" />Delete</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" class="muted">No accounts yet. Add the first one above.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (p.last_page > 1) {
+      <nav class="pager" aria-label="Pages">
+        <button class="btn btn-quiet btn-sm" type="button" [disabled]="p.current_page <= 1" (click)="load(p.current_page - 1)">Previous</button>
+        <span class="muted num">Page {{ p.current_page }} of {{ p.last_page }}</span>
+        <button class="btn btn-quiet btn-sm" type="button" [disabled]="p.current_page >= p.last_page" (click)="load(p.current_page + 1)">Next</button>
+      </nav>
+    }
+  } @else {
+    <div class="sheet table-wrap" aria-busy="true">
+      @for (i of [1, 2, 3, 4]; track i) { <div class="skeleton"></div> }
+    </div>
+  }
+</div>

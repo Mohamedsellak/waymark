@@ -1,0 +1,56 @@
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="brand" [routerLink]="auth.isLoggedIn() ? '/home' : '/'" aria-label="Waymark home">
+    <app-brand-mark />
+    <span class="wordmark">Waymark</span>
+  </a>
+
+  @if (auth.isLoggedIn()) {
+    <nav class="nav" aria-label="Main">
+      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Problems</a>
+      <a routerLink="/solve" routerLinkActive="active">Planner</a>
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin/users" routerLinkActive="active">Users</a>
+      }
+    </nav>
+  }
+
+  <div class="end">
+    <button type="button" class="btn btn-ghost btn-icon" (click)="theme.toggle()"
+            [attr.aria-label]="theme.isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
+            [title]="theme.isDark() ? 'Light theme' : 'Dark theme'">
+      <app-icon [name]="theme.isDark() ? 'sun' : 'moon'" />
+    </button>
+
+    @if (auth.isLoggedIn()) {
+      <div class="account">
+        <button type="button" class="avatar-btn" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-haspopup="menu" aria-label="Account menu">
+          <span class="avatar" aria-hidden="true">{{ (auth.user()?.email ?? '?')[0].toUpperCase() }}</span>
+          <app-icon name="chevron-down" class="chev" />
+        </button>
+        @if (menuOpen()) {
+          <div class="menu" role="menu" (keydown.escape)="menuOpen.set(false)">
+            <p class="who">
+              <strong>{{ auth.user()?.email }}</strong>
+              <span>{{ auth.isAdmin() ? 'Administrator' : 'Planner' }}</span>
+            </p>
+            <a role="menuitem" routerLink="/profile" (click)="menuOpen.set(false)"><app-icon name="user" />Account settings</a>
+            @if (auth.isAdmin()) {
+              <a role="menuitem" routerLink="/admin/users" (click)="menuOpen.set(false)"><app-icon name="users" />Manage users</a>
+            }
+            <button type="button" role="menuitem" (click)="logout()"><app-icon name="logout" />Log out</button>
+          </div>
+          <div class="scrim" (click)="menuOpen.set(false)"></div>
+        }
+      </div>
+    } @else {
+      <a class="btn btn-ghost" routerLink="/login">Log in</a>
+      <a class="btn" routerLink="/signup">Create account</a>
+    }
+  </div>
+</header>
+
+<main id="main" class="main">
+  <router-outlet />
+</main>

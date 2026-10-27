@@ -1,0 +1,11 @@
+.env
+!.env.example
+node_modules/
+dist/
+.angular/
+solver/venv/
+__pycache__/
+*.pyc
+supabase/.temp/
+supabase/.branches/
+.DS_Store

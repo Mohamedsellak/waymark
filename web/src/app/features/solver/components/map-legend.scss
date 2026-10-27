@@ -1,0 +1,25 @@
+.legend {
+  width: 260px; padding: 12px 14px 10px;
+  background: color-mix(in srgb, var(--sheet) 94%, transparent);
+  border: 1px solid var(--ink-2); border-radius: 4px;
+  box-shadow: var(--shadow);
+  outline: 1px solid var(--rule); outline-offset: 3px; /* double rule, as a printed map's neat line */
+}
+h2 { font-size: 0.95rem; letter-spacing: 0.02em; margin-bottom: 8px; }
+.keys { margin: 0 0 6px; display: grid; gap: 4px; font-size: 0.82rem; color: var(--ink-2);
+  div { display: flex; align-items: center; gap: 10px; } dt { width: 28px; display: grid; place-items: center; } dd { margin: 0; } }
+.k-depot { width: 14px; height: 14px; border-radius: 4px; background: var(--magenta); }
+.k-stop { width: 12px; height: 12px; border-radius: 50%; background: var(--ink); border: 2px solid var(--sheet); box-shadow: 0 0 0 1px var(--rule-strong); }
+.routes { list-style: none; margin: 8px 0 0; padding: 8px 0 0; border-top: 1px solid var(--rule); display: grid; gap: 2px; }
+.routes button {
+  display: grid; grid-template-columns: 28px 1fr auto auto; gap: 10px; align-items: center; width: 100%;
+  padding: 4px 4px; margin: 0 -4px; border: 0; border-radius: 4px; background: transparent; color: var(--ink);
+  font: 500 0.85rem var(--font); text-align: left; cursor: pointer;
+  &:hover { background: var(--sheet-2); }
+  &[aria-pressed='true'] .name { font-weight: 700; }
+}
+.ink { width: 28px; height: 8px; }
+li.dim { opacity: 0.45; }
+.num { font-variant-numeric: tabular-nums; text-align: right; }
+.note { margin-top: 8px; font-size: 0.78rem; color: var(--ink-3); }
+@media (max-width: 800px) { .legend { width: 220px; } .keys { display: none; } .legend:not(:has(.routes)) { display: none; } }

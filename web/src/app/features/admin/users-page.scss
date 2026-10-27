@@ -1,0 +1,14 @@
+.head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 24px; h1 { font-size: 2rem; } }
+.notice { margin-bottom: 16px; }
+.editor { padding: 20px; margin-bottom: 20px; display: grid; gap: 16px; h2 { font-size: 1.2rem; } }
+.grid { display: grid; grid-template-columns: 1.4fr 1fr 1.2fr; gap: 16px; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
+.table-wrap { overflow-x: auto; }
+.who { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--sheet-2); color: var(--ink-2); font: 700 0.78rem var(--font); flex: none; }
+.row-actions { display: flex; justify-content: flex-end; gap: 4px; }
+.danger { color: var(--danger); &:hover:not(:disabled) { color: var(--danger); background: var(--danger-soft); } }
+.pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 16px; }
+.skeleton { height: 52px; border-bottom: 1px solid var(--rule); background: linear-gradient(90deg, transparent, var(--sheet-2), transparent) 0 0 / 200% 100%; animation: shimmer 1.4s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }

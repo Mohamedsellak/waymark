@@ -1,0 +1,13 @@
+:host { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); min-height: calc(100dvh - var(--topbar)); }
+.form-side { display: grid; place-items: center; padding: 40px 24px; }
+form { width: min(380px, 100%); display: grid; gap: 16px; }
+.intro { display: grid; gap: 6px; margin-bottom: 8px; h1 { font-size: 2rem; font-weight: 700; } }
+.switch { font-size: 0.92rem; color: var(--ink-2); text-align: center; }
+.btn-block { min-height: 46px; margin-top: 4px; }
+.art { position: relative; background: var(--sheet); border-left: 1px solid var(--rule); overflow: hidden; }
+.art blockquote {
+  position: absolute; left: 40px; right: 40px; bottom: 40px; margin: 0; max-width: 34ch;
+  font: 600 1.5rem/1.25 var(--font-cond); color: var(--ink);
+  padding: 16px 18px; background: color-mix(in srgb, var(--sheet) 92%, transparent); border: 1px solid var(--ink-2); border-radius: 3px;
+}
+@media (max-width: 860px) { :host { grid-template-columns: 1fr; } .art { display: none; } }

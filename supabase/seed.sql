@@ -1,0 +1,6 @@
+-- Local development seed (runs on `supabase db reset`).
+--
+-- Users live in auth.users and are created through Supabase Auth, so this file
+-- does not insert them. To get a local admin:
+--   1. Sign up in the app (or in Studio > Authentication).
+--   2. Run:  update public.profiles set role = 'Admin' where email = 'you@example.com';

@@ -1,0 +1,76 @@
+@let sol = store.solution();
+@let t = store.totals();
+@let cfg = store.config();
+
+@if (sol) {
+  <section class="totals" aria-label="Plan totals">
+    <div><dt>Distance</dt><dd class="num">{{ store.geometries().length ? km(t.distanceKm) : '…' }}</dd></div>
+    <div><dt>Drive time</dt><dd class="num">{{ store.geometries().length ? dur(t.durationMin) : '…' }}</dd></div>
+    <div><dt>Stops</dt><dd class="num">{{ t.stops }}</dd></div>
+    @if (cfg.multiVehicle) { <div><dt>Vehicles</dt><dd class="num">{{ t.vehiclesUsed }} <small>of {{ sol.routes.length }}</small></dd></div> }
+  </section>
+
+  @if (sol.matrix === 'straight') {
+    <p class="notice notice-info"><app-icon name="alert" />Road distances were unavailable, so this plan was optimised on straight-line estimates.</p>
+  }
+
+  <div class="bar">
+    @if (idle() > 0) {
+      <p class="hint">{{ idle() }} vehicle{{ idle() > 1 ? 's' : '' }} not needed for this plan.</p>
+    } @else { <span></span> }
+    <button type="button" class="btn btn-quiet btn-sm" (click)="exportCsv()"><app-icon name="file-down" />Export routes</button>
+  </div>
+
+  <ol class="routes">
+    @for (route of sol.routes; track $index; let r = $index) {
+      @let s = store.summaries()[r];
+      @if (s.stops > 0) {
+        <li class="route" [class.focused]="store.focused() === r" [class.off]="store.hidden().has(r)" [style.--route]="color(r)">
+          <header>
+            <button type="button" class="title" (click)="store.focusRoute(r)" [attr.aria-pressed]="store.focused() === r" title="Show only this route on the map">
+              <span class="swatch" aria-hidden="true"></span>
+              <span>{{ cfg.multiVehicle ? 'Vehicle ' + (r + 1) : 'Tour' }}</span>
+            </button>
+            <span class="stats num">
+              {{ store.geometries().length ? km(s.distanceKm) : '…' }}
+              <span class="sep" aria-hidden="true"></span>
+              {{ store.geometries().length ? dur(s.durationMin) : '…' }}
+              <span class="sep" aria-hidden="true"></span>
+              {{ s.stops }} stop{{ s.stops > 1 ? 's' : '' }}
+            </span>
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" (click)="store.toggleRoute(r)"
+                    [attr.aria-label]="(store.hidden().has(r) ? 'Show' : 'Hide') + ' route ' + (r + 1)" [title]="store.hidden().has(r) ? 'Show on map' : 'Hide on map'">
+              <app-icon [name]="store.hidden().has(r) ? 'eye-off' : 'eye'" />
+            </button>
+          </header>
+
+          @if (cfg.needsDemand) {
+            <div class="load">
+              <div class="load-bar"><span [style.width.%]="(s.load / store.capacity()) * 100"></span></div>
+              <span class="num">{{ s.load }} / {{ store.capacity() }} units</span>
+            </div>
+          }
+
+          <ol class="seq">
+            @for (stop of route; track $index; let i = $index; let last = $last) {
+              <li [class.end]="i === 0 || last">
+                <span class="dot" aria-hidden="true"></span>
+                <span class="addr">
+                  @if (i > 0 && !last) { <span class="no num">{{ stop.index }}</span> }
+                  {{ i === 0 ? 'Leave depot' : last ? 'Return to depot' : (stop.label || coord(stop)) }}
+                </span>
+                @if (cfg.needsDemand && i > 0 && !last) { <span class="meta num">{{ stop.demand }} u</span> }
+                @if (cfg.needsTimeWindow && stop.arrival !== undefined) {
+                  <span class="meta num" [title]="stop.timeWindow ? 'Window ' + clock(stop.timeWindow[0]) + '–' + clock(stop.timeWindow[1]) : ''">
+                    <strong>{{ clock(stop.arrival) }}</strong>
+                    @if (i > 0 && !last && stop.timeWindow) { <span class="win"> {{ clock(stop.timeWindow[0]) }}–{{ clock(stop.timeWindow[1]) }}</span> }
+                  </span>
+                }
+              </li>
+            }
+          </ol>
+        </li>
+      }
+    }
+  </ol>
+}

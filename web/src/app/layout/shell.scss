@@ -1,0 +1,54 @@
+:host { display: flex; flex-direction: column; min-height: 100dvh; }
+.skip {
+  position: absolute; left: 12px; top: -48px; z-index: 2000; padding: 8px 12px; border-radius: var(--r-sm);
+  background: var(--ink); color: var(--paper); font-weight: 600;
+  &:focus { top: 8px; }
+}
+.topbar {
+  position: sticky; top: 0; z-index: 1100; height: var(--topbar);
+  display: flex; align-items: center; gap: 28px; padding: 0 16px 0 20px;
+  background: var(--sheet); border-bottom: 1px solid var(--rule);
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.wordmark { font: 700 1.2rem var(--font-cond); letter-spacing: -0.01em; }
+.nav {
+  display: flex; gap: 4px; height: 100%;
+  a {
+    position: relative; display: flex; align-items: center; padding: 0 10px;
+    color: var(--ink-2); text-decoration: none; font-weight: 600; font-size: 0.93rem;
+    &:hover { color: var(--ink); }
+    &.active { color: var(--ink); }
+    &.active::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--magenta); }
+  }
+}
+.end { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.account { position: relative; }
+.avatar-btn {
+  display: flex; align-items: center; gap: 4px; padding: 3px 6px 3px 3px; border-radius: 999px;
+  border: 1px solid var(--rule); background: var(--sheet); color: var(--ink-2); cursor: pointer;
+  &:hover { background: var(--sheet-2); }
+}
+.avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--paper); font: 700 0.85rem var(--font); }
+.chev { width: 16px; height: 16px; }
+.menu {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 2; width: 250px; padding: 6px;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--r); box-shadow: var(--shadow-lift);
+  animation: drop 160ms var(--ease-out); transform-origin: top right;
+  a, button {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: 0; border-radius: var(--r-sm);
+    background: none; color: var(--ink); font: 500 0.92rem var(--font); text-decoration: none; text-align: left; cursor: pointer;
+    app-icon { width: 17px; height: 17px; color: var(--ink-2); }
+    &:hover { background: var(--sheet-2); }
+  }
+}
+.who { display: grid; padding: 8px 10px 10px; margin-bottom: 4px; border-bottom: 1px solid var(--rule);
+  strong { font-weight: 600; overflow: hidden; text-overflow: ellipsis; } span { font-size: 0.8rem; color: var(--ink-3); } }
+.scrim { position: fixed; inset: 0; z-index: 1; }
+@keyframes drop { from { opacity: 0; transform: translateY(-4px) scale(0.98); } }
+.main { flex: 1; display: block; }
+
+@media (max-width: 720px) {
+  .topbar { gap: 12px; padding: 0 10px 0 12px; }
+  .wordmark { display: none; }
+  .nav a { padding: 0 6px; font-size: 0.88rem; }
+}

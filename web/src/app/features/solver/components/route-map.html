@@ -1,0 +1,28 @@
+<div #host class="map" role="application" aria-label="Route map. Click to add a stop."></div>
+
+<div class="controls" role="toolbar" aria-label="Map controls">
+  <div class="group">
+    <button type="button" class="ctl" (click)="zoom(1)" aria-label="Zoom in" title="Zoom in"><app-icon name="plus" /></button>
+    <button type="button" class="ctl" (click)="zoom(-1)" aria-label="Zoom out" title="Zoom out"><app-icon name="minus" /></button>
+  </div>
+  <div class="group">
+    <button type="button" class="ctl" (click)="fitStops()" [disabled]="!store.stops().length" aria-label="Fit all stops" title="Fit all stops"><app-icon name="fit" /></button>
+    <button type="button" class="ctl" (click)="locate()" [class.is-busy]="locating()" aria-label="Go to my location" title="My location"><app-icon name="crosshair" /></button>
+  </div>
+  <div class="group layers">
+    <button type="button" class="ctl" (click)="layersOpen.set(!layersOpen())" [attr.aria-expanded]="layersOpen()" aria-label="Map style" title="Map style"><app-icon name="layers" /></button>
+    @if (layersOpen()) {
+      <div class="layer-menu" role="menu">
+        <p class="menu-title">Map style</p>
+        <button type="button" role="menuitemradio" [attr.aria-checked]="baseActive('auto')" (click)="pickBase('auto')" [class.on]="baseActive('auto')">
+          <span class="sw sw-auto"></span>Match theme
+        </button>
+        @for (b of bases; track b.id) {
+          <button type="button" role="menuitemradio" [attr.aria-checked]="baseActive(b.id)" (click)="pickBase(b.id)" [class.on]="baseActive(b.id)">
+            <span class="sw" [style.background]="b.swatch"></span>{{ b.name }}
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

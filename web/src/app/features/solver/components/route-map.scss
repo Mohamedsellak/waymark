@@ -1,0 +1,75 @@
+:host { position: relative; display: block; height: 100%; }
+.map {
+  position: absolute; inset: 0;
+  --route-casing: #ffffff;
+  &[data-base='dark'], &[data-base='satellite'] { --route-casing: #0b1418; }
+}
+
+.controls {
+  position: absolute; top: 12px; right: 12px; z-index: 500;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.group {
+  display: flex; flex-direction: column;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--r-sm);
+  box-shadow: var(--shadow);
+}
+.ctl {
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border: 0; background: transparent; color: var(--ink); cursor: pointer;
+  & + .ctl { border-top: 1px solid var(--rule); }
+  &:first-child { border-radius: var(--r-sm) var(--r-sm) 0 0; }
+  &:last-child { border-radius: 0 0 var(--r-sm) var(--r-sm); }
+  &:only-child { border-radius: var(--r-sm); }
+  &:hover:not(:disabled) { background: var(--sheet-2); }
+  &:disabled { color: var(--ink-3); cursor: not-allowed; }
+  &.is-busy app-icon { animation: pulse 1s ease-in-out infinite; color: var(--magenta); }
+  app-icon { width: 18px; height: 18px; }
+}
+.layers { position: relative; }
+.layer-menu {
+  position: absolute; right: calc(100% + 8px); top: 0; width: 180px;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--r);
+  box-shadow: var(--shadow-lift); padding: 6px;
+  animation: menu-in 160ms var(--ease-out);
+  transform-origin: top right;
+  button {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 7px 8px; border: 0; border-radius: var(--r-sm);
+    background: transparent; color: var(--ink); font: 500 0.9rem var(--font); text-align: left; cursor: pointer;
+    &:hover { background: var(--sheet-2); }
+    &.on { color: var(--magenta); font-weight: 600; }
+  }
+}
+.menu-title { font: 600 0.78rem var(--font); color: var(--ink-3); padding: 4px 8px 6px; }
+.sw { width: 22px; height: 16px; border-radius: 3px; border: 1px solid var(--rule-strong); flex: none; }
+.sw-auto { background: linear-gradient(135deg, #e9ecea 50%, #262b30 50%); }
+
+@keyframes menu-in { from { opacity: 0; transform: scale(0.96); } }
+@keyframes pulse { 50% { opacity: 0.4; } }
+
+/* Markers and routes live in Leaflet's DOM, outside this component's encapsulation. */
+:host ::ng-deep {
+  .wm-pin-wrap { background: none; border: 0; }
+  .wm-pin {
+    display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--pin, var(--ink)); color: var(--pin-fg, var(--paper)); border: 2.5px solid var(--sheet);
+    font: 700 12px/1 var(--font); font-variant-numeric: tabular-nums;
+    box-shadow: 0 1px 2px #0003, 0 4px 10px -2px #0005;
+    transition: transform 160ms var(--ease-out), opacity 160ms;
+    cursor: grab;
+    &.is-hot { transform: scale(1.22); }
+    &.is-dim { opacity: 0.35; }
+  }
+  .wm-pin-depot {
+    width: 34px; height: 34px; border-radius: 9px; background: var(--magenta); color: var(--magenta-ink);
+    svg { width: 18px; height: 18px; }
+  }
+  .leaflet-dragging .wm-pin { cursor: grabbing; }
+  .wm-route { transition: opacity 200ms; }
+  .wm-casing { stroke: var(--route-casing); }
+  .leaflet-control-scale-line {
+    background: color-mix(in srgb, var(--sheet) 85%, transparent);
+    border-color: var(--ink-2); color: var(--ink); font: 600 10px var(--font);
+  }
+}
