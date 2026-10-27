@@ -22,6 +22,9 @@ distances from [OSRM](https://project-osrm.org/). Accounts and data live in [Sup
 - [Security model](#security-model)
 - [Limits and known constraints](#limits-and-known-constraints)
 
+> 🇫🇷 New to routing? Read [**Comment marche le solveur**](docs/comment-ca-marche.md), a step-by-step
+> explanation in French of the problems, the data the solver receives and what it returns.
+
 ---
 
 ## Features
@@ -103,6 +106,8 @@ waymark/
 │   ├── auth.py              Supabase token check and rate limit
 │   ├── tests/               unit and API tests
 │   └── README.md            API reference
+├── docs/
+│   └── comment-ca-marche.md how the solver works, explained simply (French)
 ├── supabase/                backend definition
 │   ├── migrations/          tables, triggers, Row Level Security
 │   └── functions/           admin-users, delete-account Edge Functions
