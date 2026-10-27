@@ -32,9 +32,10 @@ src/app
 ├── features/                One folder per screen, all lazy-loaded
 │   ├── landing/  home/  auth/  profile/  admin/
 │   └── solver/
-│       ├── data-access/     SolverService + raw Flask types (adapter)
-│       ├── components/      RouteMap (Leaflet), SolutionTable (CSV export)
-│       └── solver-page.*    One page for all 4 problems, driven by route data
+│       ├── data-access/     SolverStore (plan state), SolverService (solver API), road router (OSRM),
+│       │                    geocoder (Nominatim), sample data
+│       ├── components/      RouteMap, AddressSearch, MapLegend, PlanPanel, ResultsPanel
+│       └── solver-page.*    One workspace for all 4 problems, driven by route data
 ├── app.routes.ts            Route tree + guards
 └── app.config.ts            Providers: router, HttpClient, session restore
 ```
@@ -42,13 +43,12 @@ src/app
 Rules of thumb:
 
 - **Dependencies point inwards:** `features → shared → core`. Core never imports a feature.
-- **Components hold state in signals; services do I/O.** Services are stateless except
-  `AuthService`, which owns the current user.
-- **The solver adapter is the only code that knows the Flask response shapes.**
-  Every endpoint returns something different (`cords`/`adds`, flattened `demands`, …);
-  `SolverService` maps them all to one `Solution` type.
-- **Adding a problem type** means: add it to `ProblemType` + `PROBLEMS`, then add a case
-  to `SolverService`. Routes, the home page and the landing page pick it up automatically.
+- **Components hold state in signals; services do I/O.** Stateful services: `AuthService` (current user),
+  `SolverStore` (the plan being edited, saved in localStorage) and `ThemeService`.
+- **`SolverService` is the only code that knows the solver's wire format** (`data-access/solver.api.ts`);
+  the rest of the app uses the `Solution` type. Time windows are minutes since midnight everywhere.
+- **Adding a problem type** means: add it to `ProblemType` + `PROBLEMS`, extend `SolverService.toBody`,
+  and support it in the solver. Routes, the home page and the landing page pick it up automatically.
 - Path aliases: `@core/*`, `@shared/*`, `@features/*`, `@env/*`.
 
 ## Backend (Supabase)
