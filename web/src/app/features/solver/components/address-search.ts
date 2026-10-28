@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LatLng } from '@core/models/routing.model';
 import { Icon } from '@shared/components/icon';
 import { GeocoderService, Place } from '../data-access/geocoder.service';
+import { I18n } from '@core/i18n/i18n';
 
 /** Address search box over the map. Picking a result adds it as a stop. */
 @Component({
@@ -16,12 +17,12 @@ import { GeocoderService, Place } from '../data-access/geocoder.service';
         #input
         type="search"
         role="combobox"
-        aria-label="Search an address to add as a stop"
+        [attr.aria-label]="i18n.t('search.label')"
         aria-autocomplete="list"
         aria-controls="place-list"
         [attr.aria-expanded]="open()"
         [attr.aria-activedescendant]="active() >= 0 ? 'place-' + active() : null"
-        placeholder="Search an address or place"
+        [placeholder]="i18n.t('search.placeholder')"
         autocomplete="off"
         (input)="query$.next(input.value)"
         (keydown)="onKey($event)"
@@ -32,7 +33,7 @@ import { GeocoderService, Place } from '../data-access/geocoder.service';
     </div>
 
     @if (open()) {
-      <ul id="place-list" class="list" role="listbox" aria-label="Places">
+      <ul id="place-list" class="list" role="listbox" [attr.aria-label]="i18n.t('search.places')">
         @for (p of results(); track $index; let i = $index) {
           <li
             [id]="'place-' + i"
@@ -46,7 +47,7 @@ import { GeocoderService, Place } from '../data-access/geocoder.service';
             <span><strong>{{ p.label }}</strong><small>{{ p.detail }}</small></span>
           </li>
         } @empty {
-          <li class="empty">No places match “{{ lastQuery() }}”. Try a street and city.</li>
+          <li class="empty">{{ i18n.t('search.none', { query: lastQuery() }) }}</li>
         }
       </ul>
     }
@@ -54,6 +55,7 @@ import { GeocoderService, Place } from '../data-access/geocoder.service';
   styleUrl: './address-search.scss',
 })
 export class AddressSearch {
+  protected readonly i18n = inject(I18n);
   private readonly geocoder = inject(GeocoderService);
   readonly near = input<LatLng>();
   readonly picked = output<Place>();

@@ -4,6 +4,7 @@ import { PROBLEM_LIST } from '@core/models/problem.config';
 import { Icon } from '@shared/components/icon';
 import { routeColor } from '@shared/utils/route-colors';
 import { SolverStore } from '@features/solver/data-access/solver.store';
+import { I18n } from '@core/i18n/i18n';
 
 @Component({
   selector: 'app-home-page',
@@ -11,16 +12,16 @@ import { SolverStore } from '@features/solver/data-access/solver.store';
   template: `
     <div class="page">
       <header class="head">
-        <h1>What are you planning today?</h1>
-        <p class="muted">Choose the rules your routes must follow. You can switch later without losing your stops.</p>
+        <h1>{{ i18n.t('home.h1') }}</h1>
+        <p class="muted">{{ i18n.t('home.lede') }}</p>
       </header>
 
       @if (store.stops().length) {
         <a class="resume sheet" [routerLink]="['/solve', store.problem()]">
           <app-icon name="map" />
           <span>
-            <strong>Continue your plan</strong>
-            <span class="muted">{{ store.stops().length }} stops placed, last opened as {{ store.config().title }}</span>
+            <strong>{{ i18n.t('home.continue') }}</strong>
+            <span class="muted">{{ i18n.t('home.resume', { count: store.stops().length, problem: i18n.t(store.config().title) }) }}</span>
           </span>
           <app-icon name="arrow-right" class="go" />
         </a>
@@ -34,13 +35,13 @@ import { SolverStore } from '@features/solver/data-access/solver.store';
                 <path d="M3 5h66" [attr.stroke]="color(i)" stroke-width="5" stroke-linecap="round" [attr.stroke-dasharray]="dash[p.type] || null" />
               </svg>
               <span class="text">
-                <span class="title">{{ p.title }}</span>
-                <span class="muted">{{ p.description }}</span>
+                <span class="title">{{ i18n.t(p.title) }}</span>
+                <span class="muted">{{ i18n.t(p.description) }}</span>
               </span>
               <span class="needs">
-                @if (p.multiVehicle) { <span class="badge"><app-icon name="truck" />Fleet</span> }
-                @if (p.needsDemand) { <span class="badge"><app-icon name="package" />Capacity</span> }
-                @if (p.needsTimeWindow) { <span class="badge"><app-icon name="clock" />Time windows</span> }
+                @if (p.multiVehicle) { <span class="badge"><app-icon name="truck" />{{ i18n.t('home.fleet') }}</span> }
+                @if (p.needsDemand) { <span class="badge"><app-icon name="package" />{{ i18n.t('home.capacity') }}</span> }
+                @if (p.needsTimeWindow) { <span class="badge"><app-icon name="clock" />{{ i18n.t('home.windows') }}</span> }
               </span>
               <app-icon name="arrow-right" class="go" />
             </a>
@@ -80,6 +81,7 @@ import { SolverStore } from '@features/solver/data-access/solver.store';
 })
 export class HomePage {
   protected readonly store = inject(SolverStore);
+  protected readonly i18n = inject(I18n);
   protected readonly problems = PROBLEM_LIST;
   protected readonly color = routeColor;
   protected readonly dash: Record<string, string> = { cvrp: '6 5', vrptw: '1 6' };

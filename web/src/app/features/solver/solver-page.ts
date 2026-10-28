@@ -10,6 +10,7 @@ import { AddressSearch } from './components/address-search';
 import { MapLegend } from './components/map-legend';
 import { PlanPanel } from './components/plan-panel';
 import { ResultsPanel } from './components/results-panel';
+import { I18n, t } from '@core/i18n/i18n';
 
 type Tab = 'plan' | 'results';
 
@@ -22,6 +23,7 @@ type Tab = 'plan' | 'results';
 })
 export class SolverPage {
   protected readonly store = inject(SolverStore);
+  protected readonly i18n = inject(I18n);
 
   /** Bound from route data via `withComponentInputBinding()`. */
   readonly problem = input.required<ProblemType>();
@@ -32,8 +34,8 @@ export class SolverPage {
   protected readonly near = signal<LatLng | undefined>(undefined);
 
   protected readonly solveLabel = computed(() => {
-    if (this.store.loading()) return 'Solving…';
-    return this.store.solution() ? 'Solve again' : 'Solve routes';
+    if (this.store.loading()) return t('solver.solving');
+    return t(this.store.solution() ? 'solver.again' : 'solver.solve');
   });
 
   constructor() {

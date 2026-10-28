@@ -1,4 +1,5 @@
 import { LatLng } from '@core/models/routing.model';
+import { lang } from '@core/i18n/i18n';
 
 const R = 6371;
 const rad = (d: number) => (d * Math.PI) / 180;
@@ -16,7 +17,10 @@ export function pathKm(points: LatLng[]): number {
   return km;
 }
 
-export const formatKm = (km: number): string => (km < 10 ? km.toFixed(1) : Math.round(km).toLocaleString()) + ' km';
+export const formatKm = (km: number): string => {
+  const digits = km < 10 ? 1 : 0;
+  return km.toLocaleString(lang(), { minimumFractionDigits: digits, maximumFractionDigits: digits }) + '\u00a0km';
+};
 
 export function formatDuration(min: number): string {
   const m = Math.round(min);

@@ -4,6 +4,7 @@ import { downloadFile, toCsv } from '@shared/utils/csv';
 import { formatClock, formatCoord, formatDuration, formatKm } from '@shared/utils/geo';
 import { routeColor } from '@shared/utils/route-colors';
 import { SolverStore } from '../data-access/solver.store';
+import { I18n } from '@core/i18n/i18n';
 
 /** Solved routes: totals, then one block per vehicle with its ordered stops. */
 @Component({
@@ -14,6 +15,7 @@ import { SolverStore } from '../data-access/solver.store';
 })
 export class ResultsPanel {
   protected readonly store = inject(SolverStore);
+  protected readonly i18n = inject(I18n);
   protected readonly color = routeColor;
   protected readonly km = formatKm;
   protected readonly dur = formatDuration;

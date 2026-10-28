@@ -5,12 +5,14 @@ import { ThemeService } from '@core/services/theme.service';
 import { Icon } from '@shared/components/icon';
 import { routeColor } from '@shared/utils/route-colors';
 import { SolverStore } from '../data-access/solver.store';
+import { I18n, t } from '@core/i18n/i18n';
+import { MessageKey } from '@core/i18n/messages';
 
 type BaseId = 'auto' | 'streets' | 'light' | 'dark' | 'satellite' | 'topo';
 
 interface BaseMap {
   id: Exclude<BaseId, 'auto'>;
-  name: string;
+  name: MessageKey;
   url: string;
   attribution: string;
   maxZoom: number;
@@ -19,11 +21,11 @@ interface BaseMap {
 
 const OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 const BASES: BaseMap[] = [
-  { id: 'light', name: 'Light', swatch: '#e9ecea', maxZoom: 16, url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors' },
-  { id: 'dark', name: 'Dark', swatch: '#262b30', maxZoom: 16, url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors' },
-  { id: 'streets', name: 'Streets', swatch: '#f2efe9', maxZoom: 19, url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: OSM },
-  { id: 'topo', name: 'Terrain', swatch: '#c9d6a3', maxZoom: 17, url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: `${OSM}, SRTM | &copy; OpenTopoMap (CC-BY-SA)` },
-  { id: 'satellite', name: 'Satellite', swatch: '#3d4a33', maxZoom: 19, url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics' },
+  { id: 'light', name: 'map.base.light', swatch: '#e9ecea', maxZoom: 16, url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors' },
+  { id: 'dark', name: 'map.base.dark', swatch: '#262b30', maxZoom: 16, url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors' },
+  { id: 'streets', name: 'map.base.streets', swatch: '#f2efe9', maxZoom: 19, url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: OSM },
+  { id: 'topo', name: 'map.base.topo', swatch: '#c9d6a3', maxZoom: 17, url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: `${OSM}, SRTM | &copy; OpenTopoMap (CC-BY-SA)` },
+  { id: 'satellite', name: 'map.base.satellite', swatch: '#3d4a33', maxZoom: 19, url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics' },
 ];
 
 const DEPOT_SVG =
@@ -38,6 +40,7 @@ const DEPOT_SVG =
 })
 export class RouteMap implements AfterViewInit, OnDestroy {
   protected readonly store = inject(SolverStore);
+  protected readonly i18n = inject(I18n);
   private readonly theme = inject(ThemeService);
 
   readonly mapClick = output<LatLng>();
@@ -172,7 +175,7 @@ export class RouteMap implements AfterViewInit, OnDestroy {
         icon,
         draggable: true,
         keyboard: true,
-        title: depot ? 'Depot' : `Stop ${i}`,
+        title: depot ? t('stop.depot') : t('stop.n', { n: i }),
         zIndexOffset: depot ? 1000 : hovered === i ? 900 : 0,
       });
       marker.bindTooltip(this.tooltip(i, s.label), { direction: 'top', offset: [0, -16] });
@@ -188,9 +191,9 @@ export class RouteMap implements AfterViewInit, OnDestroy {
   }
 
   private tooltip(i: number, label?: string): string {
-    const title = i === 0 ? 'Depot' : `Stop ${i}`;
-    const esc = (t: string) => t.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
-    return label ? `<strong>${title}</strong><br>${esc(label)}` : `<strong>${title}</strong><br><span>Drag to move. Right-click to remove.</span>`;
+    const title = i === 0 ? t('stop.depot') : t('stop.n', { n: i });
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
+    return label ? `<strong>${title}</strong><br>${esc(label)}` : `<strong>${title}</strong><br><span>${t('map.dragHint')}</span>`;
   }
 
   private drawRoutes(): void {
@@ -216,7 +219,7 @@ export class RouteMap implements AfterViewInit, OnDestroy {
         lineCap: 'round',
         className: 'wm-route',
       })
-        .bindTooltip(`Route ${i + 1}`, { sticky: true })
+        .bindTooltip(t('map.route', { n: i + 1 }), { sticky: true })
         .on('click', (e) => {
           L.DomEvent.stopPropagation(e);
           this.store.focusRoute(i);

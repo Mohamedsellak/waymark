@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, of, timeout } from 'rxjs';
 import { environment } from '@env/environment';
 import { LatLng } from '@core/models/routing.model';
+import { lang } from '@core/i18n/i18n';
 
 export interface Place extends LatLng {
   label: string;
@@ -33,7 +34,7 @@ export class GeocoderService {
   private readonly http = inject(HttpClient);
 
   search(query: string, near?: LatLng): Observable<Place[]> {
-    const params: Record<string, string> = { q: query, format: 'jsonv2', limit: '6' };
+    const params: Record<string, string> = { q: query, format: 'jsonv2', limit: '6', 'accept-language': lang() };
     if (near) {
       // Prefer results around the current map view without excluding others.
       const d = 0.6;
@@ -56,7 +57,7 @@ export class GeocoderService {
 
   /** Short human label for a point ("12 Rue X, Maârif"), or null. Never errors. */
   reverse(point: LatLng): Observable<string | null> {
-    const params = { lat: String(point.lat), lon: String(point.lng), format: 'jsonv2', zoom: '18', addressdetails: '1' };
+    const params = { lat: String(point.lat), lon: String(point.lng), format: 'jsonv2', zoom: '18', addressdetails: '1', 'accept-language': lang() };
     return this.http.get<NominatimResult>(`${environment.geocoderUrl}/reverse`, { params }).pipe(
       timeout(8000),
       map((r) => {

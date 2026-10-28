@@ -1,25 +1,25 @@
-<div #host class="map" role="application" aria-label="Route map. Click to add a stop."></div>
+<div #host class="map" role="application" [attr.aria-label]="i18n.t('map.label')"></div>
 
-<div class="controls" role="toolbar" aria-label="Map controls">
+<div class="controls" role="toolbar" [attr.aria-label]="i18n.t('map.controls')">
   <div class="group">
-    <button type="button" class="ctl" (click)="zoom(1)" aria-label="Zoom in" title="Zoom in"><app-icon name="plus" /></button>
-    <button type="button" class="ctl" (click)="zoom(-1)" aria-label="Zoom out" title="Zoom out"><app-icon name="minus" /></button>
+    <button type="button" class="ctl" (click)="zoom(1)" [attr.aria-label]="i18n.t('map.zoomIn')" [title]="i18n.t('map.zoomIn')"><app-icon name="plus" /></button>
+    <button type="button" class="ctl" (click)="zoom(-1)" [attr.aria-label]="i18n.t('map.zoomOut')" [title]="i18n.t('map.zoomOut')"><app-icon name="minus" /></button>
   </div>
   <div class="group">
-    <button type="button" class="ctl" (click)="fitStops()" [disabled]="!store.stops().length" aria-label="Fit all stops" title="Fit all stops"><app-icon name="fit" /></button>
-    <button type="button" class="ctl" (click)="locate()" [class.is-busy]="locating()" aria-label="Go to my location" title="My location"><app-icon name="crosshair" /></button>
+    <button type="button" class="ctl" (click)="fitStops()" [disabled]="!store.stops().length" [attr.aria-label]="i18n.t('map.fit')" [title]="i18n.t('map.fit')"><app-icon name="fit" /></button>
+    <button type="button" class="ctl" (click)="locate()" [class.is-busy]="locating()" [attr.aria-label]="i18n.t('map.locateLabel')" [title]="i18n.t('map.locate')"><app-icon name="crosshair" /></button>
   </div>
   <div class="group layers">
-    <button type="button" class="ctl" (click)="layersOpen.set(!layersOpen())" [attr.aria-expanded]="layersOpen()" aria-label="Map style" title="Map style"><app-icon name="layers" /></button>
+    <button type="button" class="ctl" (click)="layersOpen.set(!layersOpen())" [attr.aria-expanded]="layersOpen()" [attr.aria-label]="i18n.t('map.style')" [title]="i18n.t('map.style')"><app-icon name="layers" /></button>
     @if (layersOpen()) {
       <div class="layer-menu" role="menu">
-        <p class="menu-title">Map style</p>
+        <p class="menu-title">{{ i18n.t('map.style') }}</p>
         <button type="button" role="menuitemradio" [attr.aria-checked]="baseActive('auto')" (click)="pickBase('auto')" [class.on]="baseActive('auto')">
-          <span class="sw sw-auto"></span>Match theme
+          <span class="sw sw-auto"></span>{{ i18n.t('map.auto') }}
         </button>
         @for (b of bases; track b.id) {
           <button type="button" role="menuitemradio" [attr.aria-checked]="baseActive(b.id)" (click)="pickBase(b.id)" [class.on]="baseActive(b.id)">
-            <span class="sw" [style.background]="b.swatch"></span>{{ b.name }}
+            <span class="sw" [style.background]="b.swatch"></span>{{ i18n.t(b.name) }}
           </button>
         }
       </div>

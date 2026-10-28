@@ -2,15 +2,15 @@
   <header class="head">
     <span class="avatar" aria-hidden="true">{{ (auth.user()?.email ?? '?')[0].toUpperCase() }}</span>
     <div>
-      <h1>Account settings</h1>
-      <p class="muted">{{ auth.user()?.email }} <span class="badge">{{ auth.isAdmin() ? 'Administrator' : 'Planner' }}</span></p>
+      <h1>{{ i18n.t('profile.h1') }}</h1>
+      <p class="muted">{{ auth.user()?.email }} <span class="badge">{{ i18n.t(auth.isAdmin() ? 'role.admin' : 'role.planner') }}</span></p>
     </div>
   </header>
 
   <section class="block">
     <div class="about">
-      <h2>Password</h2>
-      <p class="muted">You’ll need your current password to set a new one.</p>
+      <h2>{{ i18n.t('profile.passwordH') }}</h2>
+      <p class="muted">{{ i18n.t('profile.passwordLede') }}</p>
     </div>
     <form class="sheet form" [formGroup]="form" (ngSubmit)="changePassword()" novalidate>
       @if (message(); as m) {
@@ -18,33 +18,33 @@
           <app-icon [name]="m.type === 'error' ? 'alert' : 'check'" />{{ m.text }}
         </p>
       }
-      <label class="field"><span>Current password</span>
+      <label class="field"><span>{{ i18n.t('profile.current') }}</span>
         <input type="password" formControlName="current_password" autocomplete="current-password" />
       </label>
       <div class="pair">
-        <label class="field"><span>New password</span>
+        <label class="field"><span>{{ i18n.t('profile.new') }}</span>
           <input type="password" formControlName="password" autocomplete="new-password" />
-          <span class="hint">At least 8 characters.</span>
+          <span class="hint">{{ i18n.t('auth.minHint') }}</span>
         </label>
-        <label class="field"><span>Confirm new password</span>
+        <label class="field"><span>{{ i18n.t('profile.confirm') }}</span>
           <input type="password" formControlName="password_confirmation" autocomplete="new-password" />
           @if (form.hasError('mismatch') && form.controls.password_confirmation.touched) {
-            <span class="field-error">The two passwords don’t match.</span>
+            <span class="field-error">{{ i18n.t('auth.mismatch') }}</span>
           }
         </label>
       </div>
-      <div class="actions"><button class="btn" type="submit" [disabled]="form.invalid">Update password</button></div>
+      <div class="actions"><button class="btn" type="submit" [disabled]="form.invalid">{{ i18n.t('profile.update') }}</button></div>
     </form>
   </section>
 
   <section class="block">
     <div class="about">
-      <h2>Delete account</h2>
-      <p class="muted">Removes your account and sign-in. Plans saved in this browser are not affected.</p>
+      <h2>{{ i18n.t('profile.deleteH') }}</h2>
+      <p class="muted">{{ i18n.t('profile.deleteLede') }}</p>
     </div>
     <div class="sheet form danger">
-      <p>This can’t be undone. You’ll be signed out straight away.</p>
-      <div class="actions"><button class="btn btn-danger" type="button" (click)="deleteAccount()"><app-icon name="trash" />Delete my account</button></div>
+      <p>{{ i18n.t('profile.deleteWarn') }}</p>
+      <div class="actions"><button class="btn btn-danger" type="button" (click)="deleteAccount()"><app-icon name="trash" />{{ i18n.t('profile.deleteBtn') }}</button></div>
     </div>
   </section>
 </div>

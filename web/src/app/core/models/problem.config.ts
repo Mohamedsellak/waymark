@@ -1,9 +1,11 @@
+import { MessageKey } from '@core/i18n/messages';
 import { ProblemType } from './routing.model';
 
 export interface ProblemConfig {
   type: ProblemType;
-  title: string;
-  description: string;
+  /** Message keys; translate with `t()`. */
+  title: MessageKey;
+  description: MessageKey;
   multiVehicle: boolean;
   needsDemand: boolean;
   needsTimeWindow: boolean;
@@ -13,32 +15,32 @@ export interface ProblemConfig {
 export const PROBLEMS: Record<ProblemType, ProblemConfig> = {
   tsp: {
     type: 'tsp',
-    title: 'Travelling Salesman (TSP)',
-    description: 'One vehicle visits every stop once and returns to the depot.',
+    title: 'problem.tsp.title',
+    description: 'problem.tsp.description',
     multiVehicle: false,
     needsDemand: false,
     needsTimeWindow: false,
   },
   vrp: {
     type: 'vrp',
-    title: 'Vehicle Routing (VRP)',
-    description: 'Several vehicles share the stops, balancing route lengths.',
+    title: 'problem.vrp.title',
+    description: 'problem.vrp.description',
     multiVehicle: true,
     needsDemand: false,
     needsTimeWindow: false,
   },
   cvrp: {
     type: 'cvrp',
-    title: 'Capacitated VRP (CVRP)',
-    description: 'Vehicles have a capacity and every stop has a demand.',
+    title: 'problem.cvrp.title',
+    description: 'problem.cvrp.description',
     multiVehicle: true,
     needsDemand: true,
     needsTimeWindow: false,
   },
   vrptw: {
     type: 'vrptw',
-    title: 'VRP with Time Windows (VRPTW)',
-    description: 'Every stop must be served within its time window.',
+    title: 'problem.vrptw.title',
+    description: 'problem.vrptw.description',
     multiVehicle: true,
     needsDemand: false,
     needsTimeWindow: true,

@@ -4,6 +4,7 @@ import { Paginated, User, UserRole } from '@core/models/user.model';
 import { UserInput, UsersService } from '@core/services/users.service';
 import { errorMessage } from '@core/utils/http-error';
 import { Icon } from '@shared/components/icon';
+import { I18n, t } from '@core/i18n/i18n';
 
 @Component({
   selector: 'app-users-page',
@@ -12,6 +13,7 @@ import { Icon } from '@shared/components/icon';
   styleUrl: './users-page.scss',
 })
 export class UsersPage implements OnInit {
+  protected readonly i18n = inject(I18n);
   private readonly users = inject(UsersService);
 
   protected readonly page = signal<Paginated<User> | null>(null);
@@ -67,7 +69,7 @@ export class UsersPage implements OnInit {
   }
 
   protected remove(user: User): void {
-    if (!confirm(`Delete ${user.email}?`)) return;
+    if (!confirm(t('users.deleteConfirm', { email: user.email }))) return;
     this.users.remove(user.id).subscribe({
       next: () => this.load(this.page()?.current_page ?? 1),
       error: (err) => this.error.set(errorMessage(err)),

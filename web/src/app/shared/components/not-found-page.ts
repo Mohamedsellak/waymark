@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ContourField } from './contour-field';
+import { I18n } from '@core/i18n/i18n';
 
 @Component({
   selector: 'app-not-found-page',
@@ -8,9 +9,9 @@ import { ContourField } from './contour-field';
   template: `
     <app-contour-field [width]="1400" [height]="900" [seed]="404" [levels]="20" />
     <section class="sheet box">
-      <h1>Off the map</h1>
-      <p class="muted">There’s nothing at this address. Check the link, or head back to your planner.</p>
-      <a class="btn" routerLink="/">Back to Waymark</a>
+      <h1>{{ i18n.t('notFound.h1') }}</h1>
+      <p class="muted">{{ i18n.t('notFound.body') }}</p>
+      <a class="btn" routerLink="/">{{ i18n.t('notFound.back') }}</a>
     </section>
   `,
   styles: `
@@ -19,4 +20,6 @@ import { ContourField } from './contour-field';
     h1 { font-size: 2.2rem; font-weight: 700; }
   `,
 })
-export class NotFoundPage {}
+export class NotFoundPage {
+  protected readonly i18n = inject(I18n);
+}

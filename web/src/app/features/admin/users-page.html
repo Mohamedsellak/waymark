@@ -1,34 +1,34 @@
 <div class="page">
   <header class="head">
     <div>
-      <h1>Users</h1>
-      @if (page(); as p) { <p class="muted num">{{ p.total }} account{{ p.total === 1 ? '' : 's' }}</p> }
+      <h1>{{ i18n.t('users.h1') }}</h1>
+      @if (page(); as p) { <p class="muted num">{{ i18n.t('users.count', { count: p.total }) }}</p> }
     </div>
-    <button class="btn" type="button" (click)="openNew()"><app-icon name="plus" />Add user</button>
+    <button class="btn" type="button" (click)="openNew()"><app-icon name="plus" />{{ i18n.t('users.add') }}</button>
   </header>
 
   @if (error(); as msg) { <p class="notice notice-error" role="alert"><app-icon name="alert" />{{ msg }}</p> }
 
   @if (editing(); as target) {
     <form class="sheet editor" [formGroup]="form" (ngSubmit)="save()" novalidate>
-      <h2>{{ target === 'new' ? 'Add a user' : 'Edit ' + target.email }}</h2>
+      <h2>{{ target === 'new' ? i18n.t('users.addH') : i18n.t('users.editH', { email: target.email }) }}</h2>
       <div class="grid">
-        <label class="field"><span>Email</span><input type="email" formControlName="email" /></label>
-        <label class="field"><span>Role</span>
+        <label class="field"><span>{{ i18n.t('users.email') }}</span><input type="email" formControlName="email" /></label>
+        <label class="field"><span>{{ i18n.t('users.role') }}</span>
           <select formControlName="role">
-            <option value="User">Planner</option>
-            <option value="Admin">Administrator</option>
+            <option value="User">{{ i18n.t('role.planner') }}</option>
+            <option value="Admin">{{ i18n.t('role.admin') }}</option>
           </select>
         </label>
         <label class="field">
-          <span>{{ target === 'new' ? 'Password' : 'New password' }}</span>
+          <span>{{ i18n.t(target === 'new' ? 'users.password' : 'users.newPassword') }}</span>
           <input type="password" formControlName="password" autocomplete="new-password" />
-          <span class="hint">{{ target === 'new' ? 'At least 8 characters.' : 'Leave empty to keep the current one.' }}</span>
+          <span class="hint">{{ i18n.t(target === 'new' ? 'auth.minHint' : 'users.keepHint') }}</span>
         </label>
       </div>
       <div class="actions">
-        <button class="btn btn-ghost" type="button" (click)="editing.set(null)">Cancel</button>
-        <button class="btn" type="submit" [disabled]="form.invalid">{{ target === 'new' ? 'Add user' : 'Save changes' }}</button>
+        <button class="btn btn-ghost" type="button" (click)="editing.set(null)">{{ i18n.t('users.cancel') }}</button>
+        <button class="btn" type="submit" [disabled]="form.invalid">{{ i18n.t(target === 'new' ? 'users.add' : 'users.save') }}</button>
       </div>
     </form>
   }
@@ -36,7 +36,7 @@
   @if (page(); as p) {
     <div class="sheet table-wrap">
       <table class="table">
-        <thead><tr><th>Email</th><th>Role</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+        <thead><tr><th>{{ i18n.t('users.email') }}</th><th>{{ i18n.t('users.role') }}</th><th><span class="visually-hidden">{{ i18n.t('users.actions') }}</span></th></tr></thead>
         <tbody>
           @for (user of p.data; track user.id) {
             <tr>
@@ -46,24 +46,24 @@
                   {{ user.email }}
                 </span>
               </td>
-              <td><span class="badge" [class.badge-accent]="user.role === 'Admin'">{{ user.role === 'Admin' ? 'Administrator' : 'Planner' }}</span></td>
+              <td><span class="badge" [class.badge-accent]="user.role === 'Admin'">{{ i18n.t(user.role === 'Admin' ? 'role.admin' : 'role.planner') }}</span></td>
               <td class="row-actions">
-                <button class="btn btn-ghost btn-sm" type="button" (click)="openEdit(user)"><app-icon name="pencil" />Edit</button>
-                <button class="btn btn-ghost btn-sm danger" type="button" (click)="remove(user)"><app-icon name="trash" />Delete</button>
+                <button class="btn btn-ghost btn-sm" type="button" (click)="openEdit(user)"><app-icon name="pencil" />{{ i18n.t('users.edit') }}</button>
+                <button class="btn btn-ghost btn-sm danger" type="button" (click)="remove(user)"><app-icon name="trash" />{{ i18n.t('users.delete') }}</button>
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="3" class="muted">No accounts yet. Add the first one above.</td></tr>
+            <tr><td colspan="3" class="muted">{{ i18n.t('users.empty') }}</td></tr>
           }
         </tbody>
       </table>
     </div>
 
     @if (p.last_page > 1) {
-      <nav class="pager" aria-label="Pages">
-        <button class="btn btn-quiet btn-sm" type="button" [disabled]="p.current_page <= 1" (click)="load(p.current_page - 1)">Previous</button>
-        <span class="muted num">Page {{ p.current_page }} of {{ p.last_page }}</span>
-        <button class="btn btn-quiet btn-sm" type="button" [disabled]="p.current_page >= p.last_page" (click)="load(p.current_page + 1)">Next</button>
+      <nav class="pager" [attr.aria-label]="i18n.t('users.pages')">
+        <button class="btn btn-quiet btn-sm" type="button" [disabled]="p.current_page <= 1" (click)="load(p.current_page - 1)">{{ i18n.t('users.prev') }}</button>
+        <span class="muted num">{{ i18n.t('users.page', { page: p.current_page, last: p.last_page }) }}</span>
+        <button class="btn btn-quiet btn-sm" type="button" [disabled]="p.current_page >= p.last_page" (click)="load(p.current_page + 1)">{{ i18n.t('users.next') }}</button>
       </nav>
     }
   } @else {

@@ -2,21 +2,21 @@
 
 @if (cfg.multiVehicle) {
   <section class="fleet" aria-labelledby="fleet-h">
-    <h3 id="fleet-h">Fleet</h3>
+    <h3 id="fleet-h">{{ i18n.t('plan.fleet') }}</h3>
     <div class="fleet-row">
       <label class="field">
-        <span>Vehicles</span>
+        <span>{{ i18n.t('plan.vehicles') }}</span>
         <input type="number" min="1" max="50" inputmode="numeric" [value]="store.vehicles()" (change)="store.vehicles.set(num($any($event.target).value, 1))" />
       </label>
       @if (cfg.needsTimeWindow) {
         <label class="field">
-          <span>Minutes at each stop</span>
+          <span>{{ i18n.t('plan.serviceMinutes') }}</span>
           <input type="number" min="0" max="240" inputmode="numeric" [value]="store.serviceMinutes()" (change)="store.serviceMinutes.set(num($any($event.target).value))" />
         </label>
       }
       @if (cfg.needsDemand) {
         <label class="field">
-          <span>Capacity per vehicle</span>
+          <span>{{ i18n.t('plan.capacity') }}</span>
           <input type="number" min="1" inputmode="numeric" [value]="store.capacity()" (change)="store.capacity.set(num($any($event.target).value, 1))" />
         </label>
       }
@@ -25,7 +25,7 @@
       @let fleetCap = store.vehicles() * store.capacity();
       <div class="meter" [class.over]="store.totalDemand() > fleetCap">
         <div class="meter-bar"><span [style.width.%]="fleetCap ? (store.totalDemand() / fleetCap) * 100 : 0"></span></div>
-        <p class="num">{{ store.totalDemand() }} of {{ fleetCap }} units of fleet capacity booked</p>
+        <p class="num">{{ i18n.t('plan.booked', { used: store.totalDemand(), total: fleetCap }) }}</p>
       </div>
     }
   </section>
@@ -33,11 +33,11 @@
 
 <section class="stops" aria-labelledby="stops-h">
   <header class="stops-head">
-    <h3 id="stops-h">Stops <span class="count num">{{ store.stops().length }}</span></h3>
+    <h3 id="stops-h">{{ i18n.t('plan.stops') }} <span class="count num">{{ store.stops().length }}</span></h3>
     <div class="tools">
-      <button type="button" class="btn btn-ghost btn-sm" (click)="openImport()" title="Import stops from CSV"><app-icon name="upload" />Import</button>
-      <button type="button" class="btn btn-ghost btn-sm" (click)="exportCsv()" [disabled]="!store.stops().length" title="Export stops as CSV"><app-icon name="download" />Export</button>
-      <button type="button" class="btn btn-ghost btn-sm btn-icon" (click)="clear()" [disabled]="!store.stops().length" aria-label="Remove all stops" title="Remove all stops"><app-icon name="trash" /></button>
+      <button type="button" class="btn btn-ghost btn-sm" (click)="openImport()" [title]="i18n.t('plan.importTitle')"><app-icon name="upload" />{{ i18n.t('plan.import') }}</button>
+      <button type="button" class="btn btn-ghost btn-sm" (click)="exportCsv()" [disabled]="!store.stops().length" [title]="i18n.t('plan.exportTitle')"><app-icon name="download" />{{ i18n.t('plan.export') }}</button>
+      <button type="button" class="btn btn-ghost btn-sm btn-icon" (click)="clear()" [disabled]="!store.stops().length" [attr.aria-label]="i18n.t('plan.removeAll')" [title]="i18n.t('plan.removeAll')"><app-icon name="trash" /></button>
     </div>
     <input #file type="file" accept=".csv,text/csv" hidden (change)="importCsv($event)" />
   </header>
@@ -50,18 +50,18 @@
 
   @if (store.stops().length === 0) {
     <div class="empty">
-      <p><strong>Start with your depot.</strong> Search an address, click the map, or import a CSV with <code>lat</code> and <code>lng</code> columns. The first stop you add is where every vehicle starts and ends.</p>
+      <p><strong>{{ i18n.t('plan.emptyStrong') }}</strong> {{ i18n.t('plan.emptyBody') }}</p>
       <div class="empty-actions">
-        <button type="button" class="btn btn-quiet btn-sm" (click)="store.loadSample()"><app-icon name="map" />Load sample deliveries</button>
-        <button type="button" class="btn btn-quiet btn-sm" (click)="openImport()"><app-icon name="upload" />Import CSV</button>
+        <button type="button" class="btn btn-quiet btn-sm" (click)="store.loadSample()"><app-icon name="map" />{{ i18n.t('plan.sample') }}</button>
+        <button type="button" class="btn btn-quiet btn-sm" (click)="openImport()"><app-icon name="upload" />{{ i18n.t('plan.importCsv') }}</button>
       </div>
     </div>
   } @else {
     @if (cfg.needsDemand || cfg.needsTimeWindow) {
       <div class="cols" aria-hidden="true">
         <span></span>
-        @if (cfg.needsDemand) { <span class="c-num">Units</span> }
-        @if (cfg.needsTimeWindow) { <span class="c-win">Delivery window</span> }
+        @if (cfg.needsDemand) { <span class="c-num">{{ i18n.t('plan.units') }}</span> }
+        @if (cfg.needsTimeWindow) { <span class="c-win">{{ i18n.t('plan.window') }}</span> }
       </div>
     }
     <ol class="list">
@@ -76,34 +76,34 @@
             @if (i === 0) { <app-icon name="depot" /> } @else { {{ i }} }
           </span>
           <span class="what">
-            <span class="name">{{ stop.label || (i === 0 ? 'Depot' : 'Stop ' + i) }}</span>
+            <span class="name">{{ stop.label || (i === 0 ? i18n.t('stop.depot') : i18n.t('stop.n', { n: i })) }}</span>
             <span class="where num">{{ coord(stop) }}</span>
           </span>
 
           @if (cfg.needsDemand) {
             @if (i > 0) {
-              <input class="mini" type="number" min="0" [value]="stop.demand" [attr.aria-label]="'Units for stop ' + i"
+              <input class="mini" type="number" min="0" [value]="stop.demand" [attr.aria-label]="i18n.t('plan.unitsFor', { n: i })"
                      (change)="store.updateStop(i, { demand: num($any($event.target).value) })" />
             } @else { <span class="mini-blank"></span> }
           }
           @if (cfg.needsTimeWindow) {
             <span class="win">
-              <input class="clock" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="[0-2]?[0-9]:[0-5][0-9]" [value]="clock(stop.timeWindow?.[0] ?? 0)" [attr.aria-label]="'Window opens, ' + (i === 0 ? 'depot' : 'stop ' + i)"
+              <input class="clock" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="[0-2]?[0-9]:[0-5][0-9]" [value]="clock(stop.timeWindow?.[0] ?? 0)" [attr.aria-label]="i18n.t('plan.opens', { stop: stopName(i) })"
                      (change)="setTime(i, 0, $any($event.target))" />
-              <input class="clock" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="[0-2]?[0-9]:[0-5][0-9]" [value]="clock(stop.timeWindow?.[1] ?? 0)" [attr.aria-label]="'Window closes, ' + (i === 0 ? 'depot' : 'stop ' + i)"
+              <input class="clock" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="[0-2]?[0-9]:[0-5][0-9]" [value]="clock(stop.timeWindow?.[1] ?? 0)" [attr.aria-label]="i18n.t('plan.closes', { stop: stopName(i) })"
                      (change)="setTime(i, 1, $any($event.target))" />
             </span>
           }
 
           <span class="row-actions">
             @if (i > 0) {
-              <button type="button" class="btn btn-ghost btn-sm btn-icon" (click)="store.makeDepot(i)" [attr.aria-label]="'Make stop ' + i + ' the depot'" title="Make depot"><app-icon name="depot" /></button>
+              <button type="button" class="btn btn-ghost btn-sm btn-icon" (click)="store.makeDepot(i)" [attr.aria-label]="i18n.t('plan.makeDepotLabel', { n: i })" [title]="i18n.t('plan.makeDepot')"><app-icon name="depot" /></button>
             }
-            <button type="button" class="btn btn-ghost btn-sm btn-icon" (click)="store.removeStop(i)" [attr.aria-label]="'Remove ' + (i === 0 ? 'depot' : 'stop ' + i)" title="Remove"><app-icon name="x" /></button>
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" (click)="store.removeStop(i)" [attr.aria-label]="i18n.t('plan.removeLabel', { stop: stopName(i) })" [title]="i18n.t('plan.remove')"><app-icon name="x" /></button>
           </span>
         </li>
       }
     </ol>
-    <p class="hint tip">Drag a marker to move it. Right-click a marker to remove it.</p>
+    <p class="hint tip">{{ i18n.t('plan.tip') }}</p>
   }
 </section>

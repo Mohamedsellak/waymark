@@ -1,31 +1,36 @@
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main">{{ i18n.t('shell.skip') }}</a>
 
 <header class="topbar">
-  <a class="brand" [routerLink]="auth.isLoggedIn() ? '/home' : '/'" aria-label="Waymark home">
+  <a class="brand" [routerLink]="auth.isLoggedIn() ? '/home' : '/'" [attr.aria-label]="i18n.t('shell.home')">
     <app-brand-mark />
     <span class="wordmark">Waymark</span>
   </a>
 
   @if (auth.isLoggedIn()) {
-    <nav class="nav" aria-label="Main">
-      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Problems</a>
-      <a routerLink="/solve" routerLinkActive="active">Planner</a>
+    <nav class="nav" [attr.aria-label]="i18n.t('shell.mainNav')">
+      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{ i18n.t('shell.problems') }}</a>
+      <a routerLink="/solve" routerLinkActive="active">{{ i18n.t('shell.planner') }}</a>
       @if (auth.isAdmin()) {
-        <a routerLink="/admin/users" routerLinkActive="active">Users</a>
+        <a routerLink="/admin/users" routerLinkActive="active">{{ i18n.t('shell.users') }}</a>
       }
     </nav>
   }
 
   <div class="end">
+    <button type="button" class="btn btn-ghost lang" (click)="i18n.toggle()"
+            [attr.aria-label]="i18n.t('shell.langLabel')" [title]="i18n.t('shell.langLabel')"
+            [attr.lang]="i18n.lang() === 'en' ? 'fr' : 'en'">
+      {{ i18n.t('shell.langShort') }}
+    </button>
     <button type="button" class="btn btn-ghost btn-icon" (click)="theme.toggle()"
-            [attr.aria-label]="theme.isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
-            [title]="theme.isDark() ? 'Light theme' : 'Dark theme'">
+            [attr.aria-label]="i18n.t(theme.isDark() ? 'shell.toLight' : 'shell.toDark')"
+            [title]="i18n.t(theme.isDark() ? 'shell.light' : 'shell.dark')">
       <app-icon [name]="theme.isDark() ? 'sun' : 'moon'" />
     </button>
 
     @if (auth.isLoggedIn()) {
       <div class="account">
-        <button type="button" class="avatar-btn" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-haspopup="menu" aria-label="Account menu">
+        <button type="button" class="avatar-btn" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-haspopup="menu" [attr.aria-label]="i18n.t('shell.accountMenu')">
           <span class="avatar" aria-hidden="true">{{ (auth.user()?.email ?? '?')[0].toUpperCase() }}</span>
           <app-icon name="chevron-down" class="chev" />
         </button>
@@ -33,20 +38,20 @@
           <div class="menu" role="menu" (keydown.escape)="menuOpen.set(false)">
             <p class="who">
               <strong>{{ auth.user()?.email }}</strong>
-              <span>{{ auth.isAdmin() ? 'Administrator' : 'Planner' }}</span>
+              <span>{{ i18n.t(auth.isAdmin() ? 'role.admin' : 'role.planner') }}</span>
             </p>
-            <a role="menuitem" routerLink="/profile" (click)="menuOpen.set(false)"><app-icon name="user" />Account settings</a>
+            <a role="menuitem" routerLink="/profile" (click)="menuOpen.set(false)"><app-icon name="user" />{{ i18n.t('shell.settings') }}</a>
             @if (auth.isAdmin()) {
-              <a role="menuitem" routerLink="/admin/users" (click)="menuOpen.set(false)"><app-icon name="users" />Manage users</a>
+              <a role="menuitem" routerLink="/admin/users" (click)="menuOpen.set(false)"><app-icon name="users" />{{ i18n.t('shell.manageUsers') }}</a>
             }
-            <button type="button" role="menuitem" (click)="logout()"><app-icon name="logout" />Log out</button>
+            <button type="button" role="menuitem" (click)="logout()"><app-icon name="logout" />{{ i18n.t('shell.logout') }}</button>
           </div>
           <div class="scrim" (click)="menuOpen.set(false)"></div>
         }
       </div>
     } @else {
-      <a class="btn btn-ghost" routerLink="/login">Log in</a>
-      <a class="btn" routerLink="/signup">Create account</a>
+      <a class="btn btn-ghost" routerLink="/login">{{ i18n.t('shell.login') }}</a>
+      <a class="btn" routerLink="/signup">{{ i18n.t('shell.signup') }}</a>
     }
   </div>
 </header>

@@ -2,19 +2,16 @@
 
 <section class="hero">
   <div class="hero-copy">
-    <h1>Every stop on the map. The shortest routes for your fleet.</h1>
-    <p class="lede">
-      Place your depot and deliveries, say how many vans you have, what they carry, or when customers are home.
-      Waymark works out who goes where and in what order, then draws each route on real roads.
-    </p>
+    <h1>{{ i18n.t('landing.h1') }}</h1>
+    <p class="lede">{{ i18n.t('landing.lede') }}</p>
     <div class="cta">
-      <a class="btn btn-lg" [routerLink]="start"><app-icon name="route" />Plan your first routes</a>
-      @if (!auth.isLoggedIn()) { <a class="btn btn-quiet btn-lg" routerLink="/login">Log in</a> }
+      <a class="btn btn-lg" [routerLink]="start"><app-icon name="route" />{{ i18n.t('landing.cta') }}</a>
+      @if (!auth.isLoggedIn()) { <a class="btn btn-quiet btn-lg" routerLink="/login">{{ i18n.t('landing.login') }}</a> }
     </div>
-    <p class="fine">Routes are optimised with Google OR-Tools. Map data from OpenStreetMap.</p>
+    <p class="fine">{{ i18n.t('landing.fine') }}</p>
   </div>
 
-  <figure class="plate" aria-label="Sample plan: three vehicles serving nine stops from one depot">
+  <figure class="plate" [attr.aria-label]="i18n.t('landing.plateLabel')">
     <app-contour-field [width]="640" [height]="460" [seed]="11" [levels]="14" />
     <svg class="plan" viewBox="0 0 640 460" aria-hidden="true">
       @for (r of routes; track $index; let i = $index) {
@@ -32,11 +29,11 @@
       </g>
     </svg>
     <figcaption class="plate-legend">
-      <strong>Sample plan</strong>
+      <strong>{{ i18n.t('landing.samplePlan') }}</strong>
       @for (r of routes; track $index; let i = $index) {
         <span class="row">
           <svg viewBox="0 0 24 6" aria-hidden="true"><path d="M1 3h22" [attr.stroke]="r.color" stroke-width="4" stroke-linecap="round" /></svg>
-          <span>Van {{ i + 1 }}</span><span class="num">{{ r.km }}</span><span class="num subtle">{{ r.min }}</span>
+          <span>{{ i18n.t('landing.van', { n: i + 1 }) }}</span><span class="num">{{ r.km.toLocaleString(i18n.lang()) }}&nbsp;km</span><span class="num subtle">{{ r.min }}&nbsp;min</span>
         </span>
       }
     </figcaption>
@@ -45,8 +42,8 @@
 
 <section class="problems page" aria-labelledby="problems-h">
   <div class="section-head">
-    <h2 id="problems-h">Pick the problem that matches your day</h2>
-    <p class="muted">Each one adds a rule the routes have to respect. Switch between them at any time; your stops stay put.</p>
+    <h2 id="problems-h">{{ i18n.t('landing.problemsH') }}</h2>
+    <p class="muted">{{ i18n.t('landing.problemsLede') }}</p>
   </div>
   <ul class="key">
     @for (p of problems; track p.type; let i = $index) {
@@ -55,34 +52,34 @@
           <path d="M3 5h66" [attr.stroke]="color(i)" stroke-width="5" stroke-linecap="round" [attr.stroke-dasharray]="lineStyle[p.type] || null" />
         </svg>
         <div class="key-text">
-          <h3>{{ p.title }}</h3>
-          <p class="muted">{{ p.description }}</p>
+          <h3>{{ i18n.t(p.title) }}</h3>
+          <p class="muted">{{ i18n.t(p.description) }}</p>
         </div>
-        <p class="key-inputs"><span class="subtle">You set</span>{{ inputs[p.type] }}</p>
+        <p class="key-inputs"><span class="subtle">{{ i18n.t('landing.youSet') }}</span>{{ i18n.t(inputs[p.type]) }}</p>
       </li>
     }
   </ul>
 </section>
 
 <section class="steps page" aria-labelledby="steps-h">
-  <h2 id="steps-h">From a list of addresses to a plan drivers can follow</h2>
+  <h2 id="steps-h">{{ i18n.t('landing.stepsH') }}</h2>
   <ol>
-    <li><h3>Place your stops</h3><p class="muted">Search addresses, click the map, or import a CSV. The first stop is your depot.</p></li>
-    <li><h3>Describe the fleet</h3><p class="muted">Vehicles, how much each carries, and the hours each customer can receive.</p></li>
-    <li><h3>Solve</h3><p class="muted">Stops are split between vehicles and ordered to keep total distance short.</p></li>
-    <li><h3>Hand it over</h3><p class="muted">Check each route on the map, then export the stop order as a CSV.</p></li>
+    <li><h3>{{ i18n.t('landing.step1') }}</h3><p class="muted">{{ i18n.t('landing.step1Body') }}</p></li>
+    <li><h3>{{ i18n.t('landing.step2') }}</h3><p class="muted">{{ i18n.t('landing.step2Body') }}</p></li>
+    <li><h3>{{ i18n.t('landing.step3') }}</h3><p class="muted">{{ i18n.t('landing.step3Body') }}</p></li>
+    <li><h3>{{ i18n.t('landing.step4') }}</h3><p class="muted">{{ i18n.t('landing.step4Body') }}</p></li>
   </ol>
 </section>
 
 <section class="close">
   <app-contour-field [width]="1400" [height]="360" [seed]="3" [levels]="10" />
   <div class="close-inner">
-    <h2>Tomorrow's routes, planned before you leave tonight.</h2>
-    <a class="btn btn-lg" [routerLink]="start"><app-icon name="route" />Start planning</a>
+    <h2>{{ i18n.t('landing.closeH') }}</h2>
+    <a class="btn btn-lg" [routerLink]="start"><app-icon name="route" />{{ i18n.t('landing.start') }}</a>
   </div>
 </section>
 
 <footer class="foot">
   <span>Waymark</span>
-  <span class="subtle">Map data © OpenStreetMap contributors</span>
+  <span class="subtle">{{ i18n.t('landing.osm') }}</span>
 </footer>

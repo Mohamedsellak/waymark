@@ -7,6 +7,7 @@ import { SolverService } from './solver.service';
 import { RoadRouterService } from './road-router.service';
 import { SAMPLE_STOPS } from './sample-stops';
 import { GeocoderService } from './geocoder.service';
+import { t } from '@core/i18n/i18n';
 
 const KEY = 'wm_plan';
 /** Minutes since midnight. */
@@ -113,26 +114,26 @@ export class SolverStore {
   readonly validationError = computed(() => {
     const cfg = this.config();
     const stops = this.stops();
-    if (stops.length < 2) return 'Add a depot and at least one stop.';
-    if (stops.length > MAX_STOPS) return `A plan can have at most ${MAX_STOPS} stops; remove ${stops.length - MAX_STOPS}.`;
+    if (stops.length < 2) return t('valid.needStops');
+    if (stops.length > MAX_STOPS) return t('valid.tooMany', { max: MAX_STOPS, extra: stops.length - MAX_STOPS });
     if (cfg.multiVehicle && (!Number.isInteger(this.vehicles()) || this.vehicles() < 1 || this.vehicles() > MAX_VEHICLES)) {
-      return `Set between 1 and ${MAX_VEHICLES} vehicles.`;
+      return t('valid.vehicles', { max: MAX_VEHICLES });
     }
     if (cfg.needsDemand) {
-      if (this.capacity() < 1) return 'Vehicle capacity must be at least 1.';
+      if (this.capacity() < 1) return t('valid.capacity');
       const heavy = stops.findIndex((s, i) => i > 0 && (s.demand ?? 0) > this.capacity());
-      if (heavy > 0) return `Stop ${heavy} needs more than one vehicle can carry (${this.capacity()}).`;
+      if (heavy > 0) return t('valid.heavy', { n: heavy, capacity: this.capacity() });
       if (this.totalDemand() > this.vehicles() * this.capacity()) {
-        return `Total demand (${this.totalDemand()}) is more than the fleet carries (${this.vehicles() * this.capacity()}).`;
+        return t('valid.demand', { demand: this.totalDemand(), fleet: this.vehicles() * this.capacity() });
       }
     }
     if (cfg.needsTimeWindow) {
       const bad = stops.findIndex((s) => !s.timeWindow || s.timeWindow[0] >= s.timeWindow[1]);
-      if (bad >= 0) return `The window for ${bad === 0 ? 'the depot' : 'stop ' + bad} must open before it closes.`;
+      if (bad >= 0) return t('valid.window', { stop: bad === 0 ? t('stop.theDepot') : t('stop.lower', { n: bad }) });
       const [d0, d1] = stops[0].timeWindow!;
       const outside = stops.findIndex((s, i) => i > 0 && (s.timeWindow![1] < d0 || s.timeWindow![0] > d1));
-      if (outside > 0) return `Stop ${outside}'s window is outside the depot's hours.`;
-      if (this.serviceMinutes() < 0 || this.serviceMinutes() > 240) return 'Minutes per stop must be between 0 and 240.';
+      if (outside > 0) return t('valid.outside', { n: outside });
+      if (this.serviceMinutes() < 0 || this.serviceMinutes() > 240) return t('valid.service');
     }
     return null;
   });
@@ -259,7 +260,7 @@ export class SolverStore {
           this.loading.set(false);
         },
         error: (err: unknown) => {
-          this.error.set(errorMessage(err, 'The solver could not finish. Check your stops and try again.'));
+          this.error.set(errorMessage(err, t('solver.failed')));
           this.loading.set(false);
         },
       });

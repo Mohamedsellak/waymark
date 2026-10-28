@@ -3,6 +3,7 @@ import { Icon } from '@shared/components/icon';
 import { downloadFile, parseStopsCsv, toCsv } from '@shared/utils/csv';
 import { formatClock, formatCoord, parseClock } from '@shared/utils/geo';
 import { SolverStore } from '../data-access/solver.store';
+import { I18n, t } from '@core/i18n/i18n';
 
 /** Fleet settings and the editable stop list. */
 @Component({
@@ -13,6 +14,7 @@ import { SolverStore } from '../data-access/solver.store';
 })
 export class PlanPanel {
   protected readonly store = inject(SolverStore);
+  protected readonly i18n = inject(I18n);
   protected readonly coord = formatCoord;
   protected readonly clock = formatClock;
   protected readonly importNote = signal<{ ok: boolean; text: string } | null>(null);
@@ -21,6 +23,11 @@ export class PlanPanel {
   protected num(value: string, min = 0): number {
     const n = Math.floor(Number(value));
     return Number.isFinite(n) ? Math.max(min, n) : min;
+  }
+
+  /** "Depot" or "stop 3", for labels that name a row. */
+  protected stopName(i: number): string {
+    return i === 0 ? t('stop.theDepot') : t('stop.lower', { n: i });
   }
 
   protected setTime(index: number, edge: 0 | 1, input: HTMLInputElement): void {
@@ -43,13 +50,13 @@ export class PlanPanel {
     if (!file) return;
     const { stops, skipped } = parseStopsCsv(await file.text());
     if (!stops.length) {
-      this.importNote.set({ ok: false, text: 'No stops found. The file needs lat and lng columns.' });
+      this.importNote.set({ ok: false, text: t('plan.noStops') });
       return;
     }
     const replace = this.store.stops().length === 0;
     this.store.addStops(stops, replace);
-    const extra = skipped ? ` ${skipped} row${skipped > 1 ? 's' : ''} without valid coordinates skipped.` : '';
-    this.importNote.set({ ok: true, text: `Imported ${stops.length} stop${stops.length > 1 ? 's' : ''}.${extra}` });
+    const extra = skipped ? ' ' + t('plan.skipped', { count: skipped }) : '';
+    this.importNote.set({ ok: true, text: t('plan.imported', { count: stops.length }) + extra });
   }
 
   protected exportCsv(): void {
@@ -61,6 +68,6 @@ export class PlanPanel {
   }
 
   protected clear(): void {
-    if (confirm(`Remove all ${this.store.stops().length} stops?`)) this.store.clear();
+    if (confirm(t('plan.clearConfirm', { count: this.store.stops().length }))) this.store.clear();
   }
 }

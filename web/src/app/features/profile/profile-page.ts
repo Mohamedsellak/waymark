@@ -5,6 +5,7 @@ import { AuthService } from '@core/services/auth.service';
 import { ProfileService } from '@core/services/profile.service';
 import { errorMessage } from '@core/utils/http-error';
 import { Icon } from '@shared/components/icon';
+import { I18n, t } from '@core/i18n/i18n';
 
 const passwordsMatch = (group: AbstractControl): ValidationErrors | null =>
   group.get('password')?.value === group.get('password_confirmation')?.value ? null : { mismatch: true };
@@ -17,6 +18,7 @@ const passwordsMatch = (group: AbstractControl): ValidationErrors | null =>
 })
 export class ProfilePage {
   protected readonly auth = inject(AuthService);
+  protected readonly i18n = inject(I18n);
   private readonly profile = inject(ProfileService);
   private readonly router = inject(Router);
 
@@ -35,14 +37,14 @@ export class ProfilePage {
     this.profile.changePassword(this.form.getRawValue()).subscribe({
       next: () => {
         this.form.reset();
-        this.message.set({ type: 'success', text: 'Password updated.' });
+        this.message.set({ type: 'success', text: t('profile.updated') });
       },
       error: (err) => this.message.set({ type: 'error', text: errorMessage(err) }),
     });
   }
 
   protected deleteAccount(): void {
-    if (!confirm('Delete your account permanently? This cannot be undone.')) return;
+    if (!confirm(t('profile.deleteConfirm'))) return;
     this.profile.deleteAccount().subscribe({
       next: () => {
         this.auth.clear();

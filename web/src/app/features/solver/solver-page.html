@@ -1,23 +1,23 @@
 @let cfg = store.config();
 
 <div class="workspace">
-  <aside class="panel" aria-label="Route planner">
+  <aside class="panel" [attr.aria-label]="i18n.t('solver.panel')">
     <header class="panel-head">
-      <nav class="problems" aria-label="Problem type">
+      <nav class="problems" [attr.aria-label]="i18n.t('solver.problemType')">
         @for (p of problems; track p.type) {
-          <a [routerLink]="['/solve', p.type]" [class.on]="p.type === cfg.type" [attr.aria-current]="p.type === cfg.type ? 'page' : null" [title]="p.title">
+          <a [routerLink]="['/solve', p.type]" [class.on]="p.type === cfg.type" [attr.aria-current]="p.type === cfg.type ? 'page' : null" [title]="i18n.t(p.title)">
             {{ p.type.toUpperCase() }}
           </a>
         }
       </nav>
-      <h1>{{ cfg.title }}</h1>
-      <p class="muted">{{ cfg.description }}</p>
+      <h1>{{ i18n.t(cfg.title) }}</h1>
+      <p class="muted">{{ i18n.t(cfg.description) }}</p>
     </header>
 
-    <div class="tabs" role="tablist" aria-label="Planner sections">
-      <button type="button" role="tab" id="tab-plan" aria-controls="pane" [attr.aria-selected]="tab() === 'plan'" (click)="tab.set('plan')">Plan</button>
+    <div class="tabs" role="tablist" [attr.aria-label]="i18n.t('solver.sections')">
+      <button type="button" role="tab" id="tab-plan" aria-controls="pane" [attr.aria-selected]="tab() === 'plan'" (click)="tab.set('plan')">{{ i18n.t('solver.plan') }}</button>
       <button type="button" role="tab" id="tab-results" aria-controls="pane" [attr.aria-selected]="tab() === 'results'" [disabled]="!store.solution()" (click)="tab.set('results')">
-        Results
+        {{ i18n.t('solver.results') }}
         @if (store.solution()) { <span class="tick" aria-hidden="true"></span> }
       </button>
     </div>
@@ -39,7 +39,7 @@
     </footer>
   </aside>
 
-  <section class="stage" aria-label="Map">
+  <section class="stage" [attr.aria-label]="i18n.t('solver.map')">
     <app-route-map (mapClick)="addFromMap($event)" />
     <div class="search" (focusin)="searchFocus()">
       <app-address-search [near]="near()" (picked)="addPlace($event)" />
@@ -47,7 +47,7 @@
     @if (store.stops().length) {
       <div class="legend"><app-map-legend /></div>
     } @else {
-      <p class="map-hint"><app-icon name="pin" />Click anywhere on the map to place your depot</p>
+      <p class="map-hint"><app-icon name="pin" />{{ i18n.t('solver.mapHint') }}</p>
     }
   </section>
 </div>

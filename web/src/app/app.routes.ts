@@ -10,15 +10,15 @@ export const routes: Routes = [
     path: '',
     component: Shell,
     children: [
-      { path: '', title: 'Waymark: delivery route planning', loadComponent: () => import('@features/landing/landing-page').then((m) => m.LandingPage) },
+      { path: '', title: 'title.landing', loadComponent: () => import('@features/landing/landing-page').then((m) => m.LandingPage) },
 
       // Guests only
       {
         path: '',
         canActivate: [guestGuard],
         children: [
-          { path: 'login', title: 'Log in · Waymark', loadComponent: () => import('@features/auth/login-page').then((m) => m.LoginPage) },
-          { path: 'signup', title: 'Create account · Waymark', loadComponent: () => import('@features/auth/signup-page').then((m) => m.SignupPage) },
+          { path: 'login', title: 'title.login', loadComponent: () => import('@features/auth/login-page').then((m) => m.LoginPage) },
+          { path: 'signup', title: 'title.signup', loadComponent: () => import('@features/auth/signup-page').then((m) => m.SignupPage) },
         ],
       },
 
@@ -27,8 +27,8 @@ export const routes: Routes = [
         path: '',
         canActivate: [authGuard],
         children: [
-          { path: 'home', title: 'Problems · Waymark', loadComponent: () => import('@features/home/home-page').then((m) => m.HomePage) },
-          { path: 'profile', title: 'Account · Waymark', loadComponent: () => import('@features/profile/profile-page').then((m) => m.ProfilePage) },
+          { path: 'home', title: 'title.home', loadComponent: () => import('@features/home/home-page').then((m) => m.HomePage) },
+          { path: 'profile', title: 'title.profile', loadComponent: () => import('@features/profile/profile-page').then((m) => m.ProfilePage) },
           {
             path: 'solve',
             children: [
@@ -36,7 +36,7 @@ export const routes: Routes = [
               { path: '', pathMatch: 'full', redirectTo: () => `/solve/${inject(SolverStore).problem()}` },
               ...PROBLEM_LIST.map((p) => ({
               path: p.type,
-              title: `${p.title} · Waymark`,
+              title: p.title,
               data: { problem: p.type },
                 loadComponent: () => import('@features/solver/solver-page').then((m) => m.SolverPage),
               })),
@@ -44,7 +44,7 @@ export const routes: Routes = [
           },
           {
             path: 'admin/users',
-            title: 'Users · Waymark',
+            title: 'title.users',
             canActivate: [adminGuard],
             loadComponent: () => import('@features/admin/users-page').then((m) => m.UsersPage),
           },

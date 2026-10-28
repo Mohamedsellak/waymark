@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { AuthService } from './auth.service';
 import { SUPABASE, invokeFunction, unwrap } from './supabase';
+import { t } from '@core/i18n/i18n';
 
 export interface PasswordChange {
   current_password: string;
@@ -19,10 +20,10 @@ export class ProfileService {
     return from(
       (async () => {
         const email = this.auth.user()?.email;
-        if (!email) throw new Error('You are not signed in.');
+        if (!email) throw new Error(t('profile.notSignedIn'));
         // Supabase does not check the old password itself, so re-authenticate first.
         const check = await this.supabase.auth.signInWithPassword({ email, password: current_password });
-        if (check.error) throw new Error('Current password is incorrect.');
+        if (check.error) throw new Error(t('profile.wrongPassword'));
         unwrap(await this.supabase.auth.updateUser({ password }));
       })(),
     );
