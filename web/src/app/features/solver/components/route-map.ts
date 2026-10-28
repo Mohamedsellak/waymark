@@ -75,7 +75,7 @@ export class RouteMap implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const stops = this.store.stops();
     this.map = L.map(this.host().nativeElement, { zoomControl: false, attributionControl: true }).setView(
-      stops[0] ? [stops[0].lat, stops[0].lng] : [33.5731, -7.5898],
+      stops[0] ? [stops[0].lat, stops[0].lng] : [48.8566, 2.3522],
       12,
     );
     L.control.scale({ imperial: false, position: 'bottomright' }).addTo(this.map);

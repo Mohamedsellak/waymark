@@ -34,7 +34,7 @@ distances from [OSRM](https://project-osrm.org/). Accounts and data live in [Sup
 - Numbered, draggable markers. Right-click a marker to remove it; make any stop the depot.
 - Stops placed on the map get their street name filled in automatically.
 - Switch between problem types at any time without losing your stops. Your plan is saved in the browser.
-- One-click sample plan (11 deliveries around Casablanca) to try things out.
+- One-click sample plan (11 deliveries around Paris) to try things out.
 
 **Results**
 - Every route drawn on real roads, one colour per vehicle, with a printed-map style legend.
